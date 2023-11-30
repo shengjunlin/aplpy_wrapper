@@ -1,7 +1,8 @@
 # aplpy_wrapper
 
 This wrapper includes some tricks to fix the APLpy code,
-which was tested with `APLpy == 1.1.1` and `pyregion == 1.2` in Python 2.
+which was tested with [`APLpy == 1.1.1`](https://github.com/aplpy/aplpy/tree/v1.x/aplpy)
+and [`pyregion == 1.2`](https://pyregion.readthedocs.io/en/1.2/) in Python 2.
 `APLpy >= 2` has changed a lot such that this wrapper may not fully work.
 
 The `aplpy_wrapper` module provides two functions:
@@ -232,7 +233,7 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 
     m, M : float
         The display limits of the colorscale.
-        (Default value = None, then they are 0.25th- to 99.75th-percentile)
+        (Default value = None, then they are the 0.25th- to 99.75th-percentile)
 
     kwargs_colorscale : dict
         Additional arguments passed to FITSFigure.show_colorscale().

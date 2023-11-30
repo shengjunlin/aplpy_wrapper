@@ -239,7 +239,7 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 
     m, M : float
         The display limits of the colorscale.
-        (Default value = None, then they are 0.25th- to 99.75th-percentile)
+        (Default value = None, then they are the 0.25th- to 99.75th-percentile)
 
     kwargs_colorscale : dict
         Additional arguments passed to FITSFigure.show_colorscale().
