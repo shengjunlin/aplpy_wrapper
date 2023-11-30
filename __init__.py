@@ -95,7 +95,7 @@ in the orginal units in the given data (Jy/beam).
 3. More controls on the fonts with parameters:
 `size`, `weight`, `family`, `style`, `variant`, `stretch`, and `frontproperties`,
 where the default values are set by matplotlib or previously set values if
-set_font has already been called. Global default values can be set by
+`set_font` has already been called. Global default values can be set by
 editing the matplotlibrc file.
 ```
 >>> ap_fig.tick_labels.set_font()  # Labels of the RA/Dec ticks
