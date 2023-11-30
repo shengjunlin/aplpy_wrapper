@@ -74,7 +74,7 @@ I can't hack `show_contour()` with the given `factor`.
 Also, one may plot contours from a completely different data,
 where it is not necessary to work with the same `factor`.
 Therefore, the contour levels are specified
-in the orginal units in the given data (Jy/beam).
+in the original units in the given data (Jy/beam).
 ```
 >>> ap_fig.show_contour(data, colors='k', linewidths=1, smooth=None,
                         levels=np.array([0, 50, 100])/Jy2mJy)
