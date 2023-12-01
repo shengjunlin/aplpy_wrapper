@@ -13,33 +13,32 @@ The `aplpy_wrapper` module provides two functions:
 
 To import this module, please do
 ```
->>> import sys
->>> sys.path.append([the path to the parent directory of aplpy_wrapper/])
->>> from aplpy_wrapper import *
+import sys
+sys.path.append([the path to the parent directory of aplpy_wrapper/])
+from aplpy_wrapper import *
 ```
 
-One can create a matplotlib's `Figure` class instance, and plot data.
-Then save the figure into a pdf/png file.
+### One can create a matplotlib's `Figure` class instance to plot data, and then save the result into a pdf/png file.
 
 1. To plot a map, re-center it, and add a scalebar of 0.05pc at the distance of 140pc, please do
 ```
->>> from astropy.coordinates import SkyCoord
->>> from astropy import units as u
->>> target = SkyCoord('5:04:07.500', '+32:43:25.00', frame='fk5', unit=(u.hourangle, u.deg))
->>> fig_single = plt.figure(figsize=(11, 10))
->>> ap_fig = aplpy_plot(..., fig=fig_single,
+from astropy.coordinates import SkyCoord
+from astropy import units as u
+target = SkyCoord('5:04:07.500', '+32:43:25.00', frame='fk5', unit=(u.hourangle, u.deg))
+fig_single = plt.figure(figsize=(11, 10))
+ap_fig = aplpy_plot(..., fig=fig_single,
                         recenter=target, h_deg=1./60, w_deg=1./60,
                         show_sbar=True, length_pc=0.05, dist_pc=140,
                         ...)
->>> ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some trouble on bbox.
+ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some trouble on bbox.
 ```
 
-Alternatively, one can also create an `astro_coor.Loc` instance for the target.
+Alternatively, one can also create an [`astro_coor.Loc` instance](https://github.com/shengjunlin/astro_coor) for the target.
 ```
->>> from astro_coor import Coor
->>> target = Loc(RA='5:04:07.500', Dec='+32:43:25.00', name='L1512', dist_pc=140., frame='fk5')
+from astro_coor import Coor
+target = Loc(RA='5:04:07.500', Dec='+32:43:25.00', name='L1512', dist_pc=140., frame='fk5')
 ...
->>> ap_fig = aplpy_plot(..., fig=fig_single,
+ap_fig = aplpy_plot(..., fig=fig_single,
                         recenter=target, h_deg=1./60, w_deg=1./60,
                         show_sbar=True, length_pc=0.05,  # 'dist_pc' will be read from 'target'
                         ...)
@@ -47,27 +46,27 @@ Alternatively, one can also create an `astro_coor.Loc` instance for the target.
 
 2. To plot an 1-by-2 grid of two maps, please do
 ```
->>> fig_grid = plt.figure(figsize=(20, 10))
->>> ap_sub1 = aplpy_plot(..., fig=fig_grid, subplot=(1, 2, 1), ...)
->>> ap_sub2 = aplpy_plot(..., fig=fig_grid, subplot=(1, 2, 2), ...)
->>> fig_grid.savefig('map_grid.pdf', dpi=300, bbox_inches='tight')
+fig_grid = plt.figure(figsize=(20, 10))
+ap_sub1 = aplpy_plot(..., fig=fig_grid, subplot=(1, 2, 1), ...)
+ap_sub2 = aplpy_plot(..., fig=fig_grid, subplot=(1, 2, 2), ...)
+fig_grid.savefig('map_grid.pdf', dpi=300, bbox_inches='tight')
 ```
 
-More examples using `aplpy_plot()`:
+### More examples using `aplpy_plot()`
 
 1. The `factor` parameter for plotting a map and contours:
 ```
->>> Jy2mJy = 1e3  # Converting pixels in Jy/beam to mJy/beam
+Jy2mJy = 1e3  # Converting pixels in Jy/beam to mJy/beam
 ```
 
 Data is in Jy/beam but we want to display it in mJy/beam.
 ```
->>> ap_fig = aplpy_plot(data, factor=Jy2mJy, show_colorbar=True, ...)
+ap_fig = aplpy_plot(data, factor=Jy2mJy, show_colorbar=True, ...)
 ```
 
 Colorbar tickers are specified in mJy/beam.
 ```
->>> ap_fig.colorbar.set_ticks([0, 50, 100])
+ap_fig.colorbar.set_ticks([0, 50, 100])
 ```
 
 Drawing contours requires to load the data (in Jy/beam) again.
@@ -77,13 +76,13 @@ where it is not necessary to work with the same `factor`.
 Therefore, the contour levels are specified
 in the original units in the given data (Jy/beam).
 ```
->>> ap_fig.show_contour(data, colors='k', linewidths=1, smooth=None,
+ap_fig.show_contour(data, colors='k', linewidths=1, smooth=None,
                         levels=np.array([0, 50, 100])/Jy2mJy)
 ```
 
 2. Tick spacing
 ```
->>> ap_fig.ticks.set_xspacing()  # An angle in degree
+ap_fig.ticks.set_xspacing()  # An angle in degree
 ```
 
 3. More controls on the fonts with parameters:
@@ -92,36 +91,59 @@ where the default values are set by matplotlib or previously set values if
 `set_font` has already been called. Global default values can be set by
 editing the matplotlibrc file.
 ```
->>> ap_fig.tick_labels.set_font()  # Labels of the RA/Dec ticks
->>> ap_fig.color.set_font()  # Labels of the colorbar ticks
->>> ap_fig.color.set_axis_label_font()  # Labels of the colorbar
->>> ap_fig.scalebar.set_font()  # Label of the scalar bar
+ap_fig.tick_labels.set_font()  # Labels of the RA/Dec ticks
+ap_fig.color.set_font()  # Labels of the colorbar ticks
+ap_fig.color.set_axis_label_font()  # Labels of the colorbar
+ap_fig.scalebar.set_font()  # Label of the scalar bar
 ```
 
 4. Load ds9 region files and adjust them:
 * Load a file that has a ds9 'CIRCLE' region into a layer called `pol2`
 ```
->>> ap_fig.show_regions('POL2_region.reg', layer='pol2')
+ap_fig.show_regions('POL2_region.reg', layer='pol2')
 ```
 APLpy will saperate the region and the annotated text (if any)
 into the `pol2` layer and the `pol2_txt` layer,
 where the suffix `_txt` is hard-coded in APLpy.
 We can therefore change them to different colors.
 ```
->>> ap_fig._layers['pol2'].artistlist[0].set_edgecolor('blue')
->>> ap_fig._layers['pol2'].artistlist[0].set_linwidth(2)
->>> ap_fig._layers['pol2_txt'].artistlist[0].set_color('k')
+ap_fig._layers['pol2'].artistlist[0].set_edgecolor('blue')
+ap_fig._layers['pol2'].artistlist[0].set_linwidth(2)
+ap_fig._layers['pol2_txt'].artistlist[0].set_color('k')
 ```
 
 * Load a file that has multiple 'LINE' regions into a layer called `vec`
 ```
->>> ap_fig.show_regions('POL2_vectors.reg', layer='vec')
+ap_fig.show_regions('POL2_vectors.reg', layer='vec')
 ```
 Use a FOR loop to change their colors.
 ```
->>> for seg in panel._layers['vec'].artistlist:
->>>     seg.set_color('red')
->>>     seg.set_linewidth('red')
+for seg in panel._layers['vec'].artistlist:
+    seg.set_color('red')
+    seg.set_linewidth('red')
+```
+
+### An example using `discrete_cmap()`
+
+* Generate a discrete color map.
+```
+fig, ax = plt.subplots()
+# data
+x = np.random.rand(20)
+y = np.random.rand(20)
+tag = np.random.randint(0, 20, 20)
+tag[10:12] = 0  # make sure there are some 0 values to show up as grey
+# to discrete the given camp_template into N bins
+N = 10
+bounds = np.linspace(0, 20, N+1)
+cmap, norm = discrete_cmap(bounds, cmap_template=plt.cm.jet, first_grey=True)
+# make the scatter
+scat = ax.scatter(x, y, c=tag, s=np.random.randint(100, 500, 20),
+                  cmap=cmap, norm=norm)
+# create a second axes for the colorbar
+ax2 = fig.add_axes([0.95, 0.1, 0.03, 0.8])
+cb = mpl.colorbar.ColorbarBase(ax2, cmap=cmap, norm=norm,
+    spacing='proportional', ticks=bounds, boundaries=bounds, format='%1i')
 ```
 
 ## Instruction of `aplpy_plot()`
@@ -379,5 +401,35 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     ap_fig : an aplpy.FITSFigure instance.
 
     '''
+
+```
+
+## Instruction of `discrete_cmap()`
+```
+def discrete_cmap(bounds, cmap_template=plt.cm.jet, first_grey=False):
+    """Generate a discrete color map.
+
+    Ref: https://stackoverflow.com/questions/14777066/matplotlib-discrete-colorbar
+
+    Parameters
+    ----------
+    bounds : list
+        The discrete points in the colorbar.
+
+    cmap_tamplate : plt.cm object
+        The camp for discreting.
+
+    first_grey : bool
+        Force the first color entry to be grey. (Default value = False)
+
+    Returns
+    -------
+    (discrete_cmap, norm)
+
+    discrete_cmap : matplotlib.pyplot.cm object
+
+    norm : matplotlib.colors.Normalize object
+
+    """
 
 ```

@@ -468,10 +468,12 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 def discrete_cmap(bounds, cmap_template=plt.cm.jet, first_grey=False):
     """Generate a discrete color map.
 
-    bounds = np.linspace(0, 20, 21)  # define the bins
+    # x and y are the data, while c and s are their colors and sizes.
+    # to discrete the given camp into N bins
+    bounds = np.linspace(vmin, vmax, N+1)
     cmap, norm = discrete_cmap(bounds)
     # make the scatter
-    scat = ax.scatter(x, y, c=tag, s=np.random.randint(100, 500, 20),
+    scat = ax.scatter(x, y, c, s,
                       cmap=cmap, norm=norm)
     # create a second axes for the colorbar
     ax2 = fig.add_axes([0.95, 0.1, 0.03, 0.8])
