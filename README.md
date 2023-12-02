@@ -35,7 +35,7 @@ ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are s
 
 Alternatively, one can also create an [`astro_coor.Loc` instance](https://github.com/shengjunlin/astro_coor) for the target.
 ```
-from astro_coor import Coor
+from astro_coor import Loc
 target = Loc(RA='5:04:07.500', Dec='+32:43:25.00', name='L1512', dist_pc=140., frame='fk5')
 ...
 ap_fig = aplpy_plot(..., fig=fig_single,
