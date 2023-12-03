@@ -30,7 +30,7 @@ ap_fig = aplpy_plot(..., fig=fig_single,
                         recenter=target, h_deg=1./60, w_deg=1./60,
                         show_sbar=True, length_pc=0.05, dist_pc=140,
                         ...)
-ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some trouble on bbox.
+ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some troubles on bbox.
 ```
 
 Alternatively, one can also create an [`astro_coor.Loc` instance](https://github.com/shengjunlin/astro_coor) for the target.

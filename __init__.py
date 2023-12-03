@@ -7,7 +7,7 @@
 """
 # Description :
 
-This wrapper includes some tricks to fix the APLpy code,
+This wrapper includes some tricks to access the APLpy code,
 which was tested with `APLpy == 1.1.1` and `pyregion == 1.2` in Python 2.
 `APLpy >= 2` has changed a lot such that this wrapper may not fully work.
 
@@ -37,7 +37,7 @@ Then save the figure into a pdf/png file.
                         recenter=target, h_deg=1./60, w_deg=1./60,
                         show_sbar=True, length_pc=0.05, dist_pc=140,
                         ...)
->>> ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some trouble on bbox.
+>>> ap_fig.save('map.pdf', dpi=300)  # fig_single.savefig() may work but there are some troubles on bbox.
 ```
 
 Alternatively, one can also create an `astro_coor.Loc` instance for the target.
@@ -125,7 +125,7 @@ We can therefore change them to different colors.
 ```
 Use a FOR loop to change their colors.
 ```
->>> for seg in panel._layers['vec'].artistlist:
+>>> for seg in ap_fig._layers['vec'].artistlist:
 >>>     seg.set_color('red')
 >>>     seg.set_linewidth('red')
 ```
