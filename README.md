@@ -118,7 +118,7 @@ ap_fig.show_regions('POL2_vectors.reg', layer='vec')
 ```
 Use a FOR loop to change their colors.
 ```
-for seg in panel._layers['vec'].artistlist:
+for seg in ap_fig._layers['vec'].artistlist:
     seg.set_color('red')
     seg.set_linewidth('red')
 ```
