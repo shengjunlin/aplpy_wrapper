@@ -19,9 +19,8 @@ import pyregion
 from matplotlib import rc, rcParams, style
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-# For recenter()
-# from astro_coor import Loc
-# from astropy.coordinates import SkyCoord
+# from astro_coor import Loc  ## For recenter()
+from astropy.coordinates import SkyCoord  ## For recenter()
 from astropy import units as u
 # For ds9-type cmap
 from ds9_cmap import *
@@ -374,28 +373,30 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 
     # Zoom in the data
     if recenter:
-        # if SkyCoord is imported from astropy.coordinates
-        if ('SkyCoord' in dir()) and isinstance(recenter, SkyCoord):
-            ap_fig.recenter(recenter.ra.degree,
-                             recenter.deg.degree,
-                             width=w_deg, height=h_deg)
-        # if Loc is imported from astr_coor
-        elif ('Loc' in dir()) and isinstance(recenter, Loc):
-            ap_fig.recenter(recenter.ra.all_d,
-                             recenter.deg.all_d,
-                             width=w_deg, height=h_deg)
         # recenter = [RA_deg, Dec_deg]
-        elif isinstance(recenter, (list, tuple, np.ndarray)):
+        if isinstance(recenter, (list, tuple, np.ndarray)):
             ap_fig.recenter(float(recenter[0]),
                              float(recenter[1]),
                              width=w_deg, height=h_deg)
         else:
-            raise RuntimeError('aplpy_plot: Please check if '
-                    '"recenter" is an astro_coor.Loc object '
-                    'or a astropy.coordinates.SkyCoord object. '
-                    'In such cases, "from astro_coor import Loc" or '
-                    '"from astropy.coordinates import SkyCoord" should '
-                    'be executed!')
+            try:
+                # if recenter is an astropy.coordinates.SkyCoord instance
+                ap_fig.recenter(recenter.ra.degree,
+                                 recenter.dec.degree,
+                                 width=w_deg, height=h_deg)
+            except AttributeError:
+                try:
+                    # if recenter is an astr_coor.Loc instance
+                    ap_fig.recenter(recenter.RA.all_d,
+                                     recenter.Dec.all_d,
+                                     width=w_deg, height=h_deg)
+                except AttributeError:
+                    raise RuntimeError('aplpy_plot: Please check if '
+                            '"recenter" is an astro_coor.Loc object '
+                            'or a astropy.coordinates.SkyCoord object. '
+                            'In such cases, "from astro_coor import Loc" or '
+                            '"from astropy.coordinates import SkyCoord" should '
+                            'be executed!')
 
     # Format of the ticklabels and their color
     ap_fig.tick_labels.set_xformat(RA_format)
