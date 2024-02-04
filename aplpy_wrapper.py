@@ -30,7 +30,8 @@ rcParams.update({'mathtext.default': 'regular'})
 style.use('classic')
 
 def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
-             hdu=0, dim=[0, 1], slices=[], north=False, factor=1,
+             hdu=0, dim=[0, 1], slices=[], north=False,
+             factor=1, offset=0,
              cmap='Blues', m=None, M=None, kwargs_colorscale=None,
              nan_color='white', alpha=1,
              # Colorbar
@@ -118,7 +119,28 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     Use a for loop to change their colors.
     >>> for seg in panel._layers['vec'].artistlist:
     >>>     seg.set_color('red')
-    >>>     seg.set_linewidth('red')
+    >>>     seg.set_linewidth(1)
+
+    * Load a file that has multiple 'TEXT' regions into a layer called 'labels'
+    >>> for seg in panel._layers['labels_txt'].artistlist:
+    >>>     print(seg.get_text())
+    >>>     seg.set_color('blue')
+    >>>     seg.set_fontsize('medium')
+    >>>     seg.set_fontweight('bold')
+
+    * Note: an unexpected behaviour is that 'POINT' regions are all stored
+    in the layer with the suffix `_txt` while the main layer without the
+    suffix becomes empty. Therefore, panel._layers[layer_name+'_txt'].artistlist
+    is a list of <Line2D>, <Annotation>, <Line2D>, <Annotation>, ...,
+    if the 'POINT' regions have texts.
+    Otherwise, the list only has <Line2D> instances.
+    In such cases, to change their colors, linewidthes, and colors:
+    >>> ap_fig.show_regions('sources.reg', layer='sou')
+    >>> for seg in panel._layers['sou_txt'].artistlist:
+    >>>     seg.set_markeredgecolor('red')
+    >>>     seg.set_markeredgewidth(1)
+    >>>     seg.set_markersize(12)
+
 
     Parameters
     ----------
@@ -173,6 +195,10 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 
     factor : float
         A factor applied on the pixel values. This is a method hacking
+        aplpy 1.1.1. (Default value = 1)
+
+    offset : float
+        An offset applied on the pixel values. This is a method hacking
         aplpy 1.1.1. (Default value = 1)
 
     cmap : str
@@ -358,6 +384,10 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     # Apply a factor to scale the pixels
     if factor != 1:
         ap_fig._data *= factor
+
+    # Apply an offset to the pixels
+    if offset != 0:
+        ap_fig._data += offset
 
     # Colorscale and the background color
     ap_fig.show_colorscale(cmap=cmap, vmin=m, vmax=M, **kwargs_colorscale)

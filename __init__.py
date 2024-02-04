@@ -127,7 +127,31 @@ Use a FOR loop to change their colors.
 ```
 >>> for seg in ap_fig._layers['vec'].artistlist:
 >>>     seg.set_color('red')
->>>     seg.set_linewidth('red')
+>>>     seg.set_linewidth(1)
+```
+
+* Load a file that has multiple 'TEXT' regions into a layer called 'labels'
+```
+>>> for seg in panel._layers['labels_txt'].artistlist:
+>>>     print(seg.get_text())
+>>>     seg.set_color('blue')
+>>>     seg.set_fontsize('medium')
+>>>     seg.set_fontweight('bold')
+```
+
+* Note: an unexpected behaviour is that 'POINT' regions are all stored
+in the layer with the suffix `_txt` while the main layer without the
+suffix becomes empty. Therefore, panel._layers[layer_name+'_txt'].artistlist
+is a list of <Line2D>, <Annotation>, <Line2D>, <Annotation>, ...,
+if the 'POINT' regions have texts.
+Otherwise, the list only has <Line2D> instances.
+In such cases, to change their colors, linewidthes, and colors:
+```
+>>> ap_fig.show_regions('sources.reg', layer='sou')
+>>> for seg in panel._layers['sou_txt'].artistlist:
+>>>     seg.set_markeredgecolor('red')
+>>>     seg.set_markeredgewidth(1)
+>>>     seg.set_markersize(12)
 ```
 
 ## Instruction of `aplpy_plot()`
