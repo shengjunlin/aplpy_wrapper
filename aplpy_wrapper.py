@@ -31,8 +31,9 @@ style.use('classic')
 
 def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
              hdu=0, dim=[0, 1], slices=[], north=False,
-             factor=1, offset=0,
-             cmap='Blues', m=None, M=None, kwargs_colorscale=None,
+             factor=1, offset=0, fix_dec_sparx=False,
+             cmap='Blues', m=None, M=None, scale_mM=False,
+             kwargs_colorscale=None,
              nan_color='white', alpha=1,
              # Colorbar
              show_colorbar=True,
@@ -218,6 +219,10 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
         The display limits of the colorscale.
         (Default value = None, then they are 0.25th- to 99.75th-percentile)
 
+    scale_mM : bool
+        Replace `m` and `M` with the minimum and maximum of the map.
+        (Default value = False)
+
     kwargs_colorscale : dict
         Additional arguments passed to FITSFigure.show_colorscale().
         (Default value = None)
@@ -390,6 +395,9 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
         ap_fig._data += offset
 
     # Colorscale and the background color
+    if scale_mM:
+        m = np.nanmin(ap_fig._data)
+        M = np.nanmax(ap_fig._data)
     ap_fig.show_colorscale(cmap=cmap, vmin=m, vmax=M, **kwargs_colorscale)
     ap_fig.set_nan_color(nan_color)
     ap_fig.image.set_alpha(alpha)
@@ -437,8 +445,12 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     # Hide RA, Dec ticklabels
     if hide_RA:
         ap_fig.tick_labels.hide_x()
+    else:
+        ap_fig.tick_labels.show_x()
     if hide_Dec:
         ap_fig.tick_labels.hide_y()
+    else:
+        ap_fig.tick_labels.show_y()
 
     # Remove RA(J2000) and Dec(J2000)
     if hide_axis_labels:
