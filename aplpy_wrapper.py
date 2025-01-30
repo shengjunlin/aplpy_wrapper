@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from astropy.coordinates import SkyCoord  ## For recenter()
 from astropy import units as u
 # For ds9-type cmap
-from ds9_cmap import *
+from .ds9_cmap import *
 
 rc('text', usetex=True)
 rcParams.update({'mathtext.default': 'regular'})
@@ -41,6 +41,8 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
              colorbar_label_fontsize=16,
              colorbar_ticklabel_fontsize=16,
              kwargs_colorbar=None,
+             # Spacing
+             xspacing_deg=None, yspacing_deg=None,
              # Recenter
              recenter=None, w_deg=None, h_deg=None,
              # Axis labels and tickers
@@ -89,10 +91,7 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     >>> ap_fig.show_contour(data, colors='k', linewidths=1, smooth=None,
                             levels=np.array([0, 50, 100])/Jy2mJy)
 
-    2. Tick spacing
-    >>> ap_fig.ticks.set_xspacing()  # An angle in degree
-
-    3. More controls on the fonts with parameters:
+    2. More controls on the fonts with parameters:
     size, weight, family, style, variant, stretch, and frontproperties,
     where the default values are set by matplotlib or previously set values if
     set_font has already been called. Global default values can be set by
@@ -102,7 +101,7 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     >>> ap_fig.color.set_axis_label_font()  # Labels of the colorbar
     >>> ap_fig.scalebar.set_font()  # Label of the scalar bar
 
-    4. Load ds9 region files and adjust them:
+    3. Load ds9 region files and adjust them:
     * Load a file that has a ds9 'CIRCLE' region into a layer called `pol2`
     >>> ap_fig.show_regions('POL2_region.reg', layer='pol2')
 
@@ -111,7 +110,7 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     where the suffix `_txt` is hard-coded in APLpy.
     We can therefore change them to different colors.
     >>> ap_fig._layers['pol2'].artistlist[0].set_edgecolor('blue')
-    >>> ap_fig._layers['pol2'].artistlist[0].set_linwidth(2)
+    >>> ap_fig._layers['pol2'].artistlist[0].set_linewidth(2)
     >>> ap_fig._layers['pol2_txt'].artistlist[0].set_color('k')
 
     * Load a file that has multiple 'LINE' regions into a layer called 'vec'
@@ -249,6 +248,14 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
 
     kwargs_colorbar : dict
         Additional arguments passed to FITSFigure.add_colorbar().
+        (Default value = None)
+
+    xspacing_deg : float
+        Assign the RA tick-spacing in degree.
+        (Default value = None)
+
+    yspacing_deg : float
+        Assign the Dec tick-spacing in degree.
         (Default value = None)
 
     recenter : an astro_coor.Loc object,
@@ -401,6 +408,10 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
     ap_fig.show_colorscale(cmap=cmap, vmin=m, vmax=M, **kwargs_colorscale)
     ap_fig.set_nan_color(nan_color)
     ap_fig.image.set_alpha(alpha)
+    if xspacing_deg:
+        ap_fig.ticks.set_xspacing(xspacing_deg)
+    if yspacing_deg:
+        ap_fig.ticks.set_yspacing(yspacing_deg)
 
     # Add a colorbar
     if show_colorbar:
