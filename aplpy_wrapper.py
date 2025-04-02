@@ -32,7 +32,9 @@ style.use('classic')
 def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
              hdu=0, dim=[0, 1], slices=[], north=False,
              factor=1, offset=0, fix_dec_sparx=False,
-             cmap='Blues', m=None, M=None, scale_mM=False,
+             cmap='Blues', m=None, M=None,
+             pmin=0.25, pmax=99.75,
+             auto_scale=None,
              kwargs_colorscale=None,
              nan_color='white', alpha=1,
              # Colorbar
@@ -218,9 +220,22 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
         The display limits of the colorscale.
         (Default value = None, then they are 0.25th- to 99.75th-percentile)
 
-    scale_mM : bool
-        Replace `m` and `M` with the minimum and maximum of the map.
-        (Default value = False)
+    pmin : float, optional
+        Percentile value used to determine the minimum pixel value to
+        use for the grayscale if vmin is set to None. The default
+        value is 0.25%.
+
+    pmax : float, optional
+        Percentile value used to determine the maximum pixel value to
+        use for the grayscale if vmax is set to None. The default
+        value is 99.75%.
+
+    auto_scale : str
+        If not None, automatically determine and overwrite`m` and `M`.
+        'mM': Replace `m` and `M` with the minimum and maximum of the map.
+        '0M': Replace `M` with the maximum of the map, `m`=0.
+        '-MM': Replace `M` with the maximum of the map, `m`=-`M`.
+        (Default value = None)
 
     kwargs_colorscale : dict
         Additional arguments passed to FITSFigure.show_colorscale().
@@ -402,10 +417,17 @@ def aplpy_plot(data, fig=None, subplot=(1, 1, 1),
         ap_fig._data += offset
 
     # Colorscale and the background color
-    if scale_mM:
-        m = np.nanmin(ap_fig._data)
-        M = np.nanmax(ap_fig._data)
-    ap_fig.show_colorscale(cmap=cmap, vmin=m, vmax=M, **kwargs_colorscale)
+    if auto_scale is not None:
+        if auto_scale == 'mM':
+            M = np.nanmax(ap_fig._data)
+            m = np.nanmin(ap_fig._data)
+        elif auto_scale == '0M':
+            M = np.nanmax(ap_fig._data)
+            m = 0.
+        elif auto_scale == '-MM':
+            M = np.nanmax(ap_fig._data)
+            m = -M
+    ap_fig.show_colorscale(cmap=cmap, vmin=m, vmax=M, pmin=pmin, pmax=pmax, **kwargs_colorscale)
     ap_fig.set_nan_color(nan_color)
     ap_fig.image.set_alpha(alpha)
     if xspacing_deg:
